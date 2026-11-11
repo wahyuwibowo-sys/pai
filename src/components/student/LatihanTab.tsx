@@ -14,7 +14,9 @@ import {
   Sparkles,
   Layers,
   ChevronRight,
+  Scale,
 } from 'lucide-react';
+import { KalkulatorManual } from './KalkulatorManual';
 
 interface MatchPair {
   id: string;
@@ -32,11 +34,15 @@ const MATCHING_PAIRS_GAME: MatchPair[] = [
   { id: 'm6', heir: 'Saudara Seibu (tunggal)', condition: 'Kondisi kalalah', fraction: '1/6' },
 ];
 
-export const LatihanTab: React.FC = () => {
+interface LatihanTabProps {
+  initialMode?: 'soal' | 'matching' | 'kalkulator';
+}
+
+export const LatihanTab: React.FC<LatihanTabProps> = ({ initialMode = 'soal' }) => {
   const { questions, currentUser, addStudentXP } = useAuth();
   const { showToast } = useToast();
 
-  const [activeMode, setActiveMode] = useState<'soal' | 'matching'>('soal');
+  const [activeMode, setActiveMode] = useState<'soal' | 'matching' | 'kalkulator'>(initialMode);
   const practiceQuestions = questions.filter(q => q.kategori === 'latihan');
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -168,26 +174,39 @@ export const LatihanTab: React.FC = () => {
       </div>
 
       {/* Mode Switcher Tabs */}
-      <div className="flex items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-2.5 flex-wrap">
         <button
           onClick={() => setActiveMode('soal')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
             activeMode === 'soal'
               ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/20'
               : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500'
           }`}
         >
-          <HelpCircle className="w-4 h-4" /> Soal Latihan Bertahap ({practiceQuestions.length} Soal)
+          <HelpCircle className="w-4 h-4" /> Soal Latihan ({practiceQuestions.length})
         </button>
         <button
           onClick={() => setActiveMode('matching')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
             activeMode === 'matching'
               ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/20'
               : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500'
           }`}
         >
-          <Layers className="w-4 h-4 text-amber-400" /> Game Mencocokkan Pasangan Furudh
+          <Layers className="w-4 h-4 text-amber-400" /> Game Mencocokkan
+        </button>
+        <button
+          onClick={() => setActiveMode('kalkulator')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+            activeMode === 'kalkulator'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/20'
+              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500'
+          }`}
+        >
+          <Scale className="w-4 h-4 text-emerald-400" /> Kalkulator Hitung Manual
+          <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-amber-400 text-emerald-950 font-black">
+            Latihan
+          </span>
         </button>
       </div>
 
@@ -431,9 +450,11 @@ export const LatihanTab: React.FC = () => {
             >
               Reset Game Pasangan
             </button>
-          </div>
         </div>
       )}
+
+      {/* MODE 3: KALKULATOR HITUNG MANUAL */}
+      {activeMode === 'kalkulator' && <KalkulatorManual />}
     </div>
   );
 };
