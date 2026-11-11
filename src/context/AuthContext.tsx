@@ -17,6 +17,7 @@ interface AuthContextType {
   switchUser: (userId: string) => void;
   // User Management
   addUser: (userData: Omit<User, 'id' | 'createdAt'>) => Promise<void>;
+  addUsersBulk: (usersData: Omit<User, 'id' | 'createdAt'>[]) => Promise<{ count: number; failed: number }>;
   updateUser: (userData: User) => Promise<void>;
   deleteUser: (userId: string) => Promise<void>;
   resetPassword: (userId: string, newPass?: string) => Promise<void>;
@@ -285,6 +286,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const addUsersBulk = async (newUsersData: Omit<User, 'id' | 'createdAt'>[]): Promise<{ count: number; failed: number }> => {
+    const timestamp = new Date().toISOString();
+    const createdUsers: User[] = newUsersData.map((userData, index) => ({
+      ...userData,
+      id: `usr-${Date.now()}-${index}-${Math.random().toString(36).substring(2, 6)}`,
+      createdAt: timestamp,
+      xp: userData.xp || 0,
+      level: userData.level || 1,
+      badges: userData.badges || (userData.role === 'admin' ? ['Admin Sistem'] : userData.role === 'guru' ? ['Pengajar Faraidh'] : ['Pemula Waris']),
+    }));
+
+    setUsers(prev => [...createdUsers, ...prev]);
+
+    let failCount = 0;
+    for (const u of createdUsers) {
+      try {
+        await setDoc(doc(db, 'users', u.id), u);
+      } catch (e) {
+        failCount++;
+      }
+    }
+
+    return { count: createdUsers.length, failed: failCount };
+  };
+
   const updateUser = async (userData: User) => {
     setUsers(prev => prev.map(u => (u.id === userData.id ? userData : u)));
     if (currentUser?.id === userData.id) {
@@ -491,6 +517,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         switchUser,
         addUser,
+        addUsersBulk,
         updateUser,
         deleteUser,
         resetPassword,

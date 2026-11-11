@@ -16,9 +16,14 @@ import {
   Lock,
   User as UserIcon,
   Award,
+  UploadCloud,
 } from 'lucide-react';
 
-export const ManajemenGuru: React.FC = () => {
+interface ManajemenGuruProps {
+  onNavigateToImport?: () => void;
+}
+
+export const ManajemenGuru: React.FC<ManajemenGuruProps> = ({ onNavigateToImport }) => {
   const { users, addUser, updateUser, deleteUser, resetPassword, currentUser } = useAuth();
   const { showToast } = useToast();
 
@@ -170,13 +175,27 @@ export const ManajemenGuru: React.FC = () => {
           </div>
         </div>
 
-        <button
-          onClick={handleOpenAdd}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 active:scale-98"
-        >
-          <UserPlus className="w-4 h-4" />
-          <span>Tambah Akun Baru</span>
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {onNavigateToImport && (
+            <button
+              type="button"
+              onClick={onNavigateToImport}
+              className="flex items-center gap-1.5 px-3.5 py-2.5 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 rounded-xl text-xs font-bold transition-all shadow-xs"
+              title="Buka menu impor massal guru dan admin dari Excel atau CSV"
+            >
+              <UploadCloud className="w-4 h-4 text-emerald-600" />
+              <span>Impor Excel</span>
+            </button>
+          )}
+
+          <button
+            onClick={handleOpenAdd}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 active:scale-98"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>Tambah Akun Baru</span>
+          </button>
+        </div>
       </div>
 
       {/* Search Input */}

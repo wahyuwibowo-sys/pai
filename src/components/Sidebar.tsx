@@ -22,6 +22,7 @@ import {
   ChevronRight,
   Sparkles,
   Layers,
+  UploadCloud,
   X,
 } from 'lucide-react';
 
@@ -64,6 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'overview', label: 'Dashboard Statistik', icon: LayoutDashboard, badge: 'Grafik' },
     { id: 'monitoring', label: 'Monitoring & Rapor', icon: FileSpreadsheet, badge: 'PDF/Excel' },
     { id: 'siswa', label: 'Data Peserta Didik', icon: Users, badge: `${users.filter(u => u.role === 'siswa').length}` },
+    { id: 'impor_user', label: 'Impor Data Siswa', icon: UploadCloud, badge: 'Excel' },
     { id: 'materi_admin', label: 'Modul Pembelajaran', icon: BookOpen, badge: 'Materi' },
     { id: 'soal_admin', label: 'Bank Soal & KKM', icon: HelpCircle, badge: 'Soal' },
   ];
@@ -74,6 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'monitoring', label: 'Monitoring & Laporan', icon: FileSpreadsheet, badge: 'PDF/Excel' },
     { id: 'siswa', label: 'Manajemen Siswa', icon: Users, badge: `${users.filter(u => u.role === 'siswa').length}` },
     { id: 'guru_admin', label: 'Manajemen Guru & Admin', icon: ShieldCheck, badge: `${users.filter(u => u.role === 'guru' || u.role === 'admin').length}` },
+    { id: 'impor_user', label: 'Impor Siswa & Guru', icon: UploadCloud, badge: 'Excel/CSV' },
     { id: 'materi_admin', label: 'Manajemen Materi', icon: BookOpen, badge: 'Editor' },
     { id: 'soal_admin', label: 'Bank Soal & KKM', icon: HelpCircle, badge: 'Pengaturan' },
   ];

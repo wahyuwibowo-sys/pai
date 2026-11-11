@@ -12,6 +12,7 @@ import { ManajemenSiswa } from './components/teacher/ManajemenSiswa';
 import { ManajemenGuru } from './components/teacher/ManajemenGuru';
 import { ManajemenMateri } from './components/teacher/ManajemenMateri';
 import { ManajemenSoal } from './components/teacher/ManajemenSoal';
+import { ImporUser } from './components/teacher/ImporUser';
 import { EditProfileModal } from './components/EditProfileModal';
 import { AiChatbot } from './components/AiChatbot';
 import {
@@ -73,6 +74,8 @@ function MainAppShell() {
           return activeRoleView === 'admin' ? 'Manajemen Data Siswa' : 'Data Peserta Didik';
         case 'guru_admin':
           return 'Manajemen Akun Guru & Administrator';
+        case 'impor_user':
+          return 'Impor Data Pengguna (Siswa & Guru)';
         case 'materi_admin':
           return 'Manajemen Modul Pembelajaran';
         case 'soal_admin':
@@ -253,9 +256,11 @@ function MainAppShell() {
             activeMenu === 'monitoring' ? (
               <MonitoringNilai />
             ) : activeMenu === 'siswa' ? (
-              <ManajemenSiswa />
+              <ManajemenSiswa onNavigateToImport={() => setActiveMenu('impor_user')} />
             ) : activeMenu === 'guru_admin' ? (
-              <ManajemenGuru />
+              <ManajemenGuru onNavigateToImport={() => setActiveMenu('impor_user')} />
+            ) : activeMenu === 'impor_user' ? (
+              <ImporUser onNavigateToTab={setActiveMenu} />
             ) : activeMenu === 'materi_admin' ? (
               <ManajemenMateri />
             ) : activeMenu === 'soal_admin' ? (

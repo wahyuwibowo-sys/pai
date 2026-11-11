@@ -4,17 +4,28 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 
+import fs from 'fs';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function resolvePort(): number {
+  // 1. If explicit --port argument is provided (e.g. dev server runner)
   const portArgIndex = process.argv.indexOf('--port');
   if (portArgIndex !== -1 && process.argv[portArgIndex + 1]) {
     const parsed = Number(process.argv[portArgIndex + 1]);
     if (!isNaN(parsed)) return parsed;
   }
+  // 2. In Cloud Run deployment, PORT environment variable is required
+  if (process.env.PORT) {
+    const parsed = Number(process.env.PORT);
+    if (process.env.NODE_ENV === 'production' || process.env.K_SERVICE || !process.argv.includes('--port')) {
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+    }
+  }
+  // 3. Fallback to 3000
   return 3000;
 }
 
@@ -22,6 +33,11 @@ const port = resolvePort();
 const app = express();
 
 app.use(express.json());
+
+// Health check endpoint for Cloud Run and deployment probes
+app.get('/api/health', (_req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
 
 // Knowledge-based fallback for Faraidh learning if API key is pending or network times out
 function getFaraidhExpertReply(query: string, studentName?: string): string {
@@ -154,7 +170,14 @@ ${context ? `Konteks siswa: ${JSON.stringify(context)}` : ''}`;
 });
 
 async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
+  const distPath = path.resolve(__dirname, 'dist');
+  const distIndexPath = path.resolve(distPath, 'index.html');
+  const isProduction =
+    process.env.NODE_ENV === 'production' ||
+    Boolean(process.env.K_SERVICE) ||
+    (!process.argv.includes('--port') && fs.existsSync(distIndexPath));
+
+  if (!isProduction) {
     const { createServer } = await import('vite');
     const vite = await createServer({
       server: { middlewareMode: true },
@@ -162,14 +185,14 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.resolve(__dirname, 'dist')));
+    app.use(express.static(distPath));
     app.get('*', (_req, res) => {
-      res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+      res.sendFile(distIndexPath);
     });
   }
 
   app.listen(port, '0.0.0.0', () => {
-    console.log(`PAI-Waris Digital server running on port ${port}`);
+    console.log(`PAI-Waris Digital server running on port ${port} (mode: ${isProduction ? 'production' : 'development'})`);
   });
 }
 
