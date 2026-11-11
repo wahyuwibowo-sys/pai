@@ -1,0 +1,226 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile for teachers and students",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique user ID"
+        },
+        "nama": {
+          "type": "string",
+          "description": "Full name of the user"
+        },
+        "username": {
+          "type": "string",
+          "description": "Unique username"
+        },
+        "password": {
+          "type": "string",
+          "description": "User password or access PIN"
+        },
+        "kelas": {
+          "type": "string",
+          "description": "Class grade or section (e.g. XII RPL 1)"
+        },
+        "nomorAbsen": {
+          "type": "number",
+          "description": "Attendance number"
+        },
+        "role": {
+          "type": "string",
+          "description": "Role: admin, guru, or siswa"
+        },
+        "xp": {
+          "type": "number",
+          "description": "Gamification XP points"
+        },
+        "level": {
+          "type": "number",
+          "description": "Student level"
+        },
+        "badges": {
+          "type": "array",
+          "description": "Earned badge names"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Account creation timestamp"
+        }
+      },
+      "required": ["nama", "username", "role", "kelas"]
+    },
+    "Material": {
+      "title": "Material",
+      "description": "Islamic inheritance lesson material",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Material identifier"
+        },
+        "judul": {
+          "type": "string",
+          "description": "Title of the material"
+        },
+        "kategori": {
+          "type": "string",
+          "description": "Sub-category: Pengertian, Rukun & Syarat, Sebab Mewarisi, Hijab & Mahjub, Bagian Ahli Waris"
+        },
+        "ringkasan": {
+          "type": "string",
+          "description": "Short summary or key takeaway"
+        },
+        "isi": {
+          "type": "string",
+          "description": "Full rich text or markdown content"
+        },
+        "dalil": {
+          "type": "string",
+          "description": "Quranic verse or Hadith citation"
+        },
+        "gambarUrl": {
+          "type": "string",
+          "description": "Optional illustration URL"
+        },
+        "pdfUrl": {
+          "type": "string",
+          "description": "Optional PDF attachment URL or base64"
+        },
+        "urutan": {
+          "type": "number",
+          "description": "Order sequence"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["judul", "kategori", "isi"]
+    },
+    "Question": {
+      "title": "Question",
+      "description": "Practice or exam question",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Question ID"
+        },
+        "tipe": {
+          "type": "string",
+          "description": "Type: pilihan_ganda, benar_salah, isian, studi_kasus"
+        },
+        "kategori": {
+          "type": "string",
+          "description": "latihan or uji_kemampuan"
+        },
+        "soal": {
+          "type": "string",
+          "description": "Question prompt or scenario"
+        },
+        "opsi": {
+          "type": "array",
+          "description": "Options for multiple choice"
+        },
+        "jawaban": {
+          "type": "string",
+          "description": "Correct answer key"
+        },
+        "pembahasan": {
+          "type": "string",
+          "description": "Step-by-step Faraidh explanation"
+        },
+        "skor": {
+          "type": "number",
+          "description": "Points awarded"
+        },
+        "tingkatKesulitan": {
+          "type": "string",
+          "description": "mudah, sedang, sulit"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp"
+        }
+      },
+      "required": ["soal", "jawaban", "pembahasan", "skor", "kategori"]
+    },
+    "Result": {
+      "title": "Result",
+      "description": "Student test or practice assessment result",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Result ID"
+        },
+        "idSiswa": {
+          "type": "string",
+          "description": "Student identifier or username"
+        },
+        "namaSiswa": {
+          "type": "string",
+          "description": "Student full name"
+        },
+        "kelas": {
+          "type": "string",
+          "description": "Class name"
+        },
+        "tipe": {
+          "type": "string",
+          "description": "latihan or uji_kemampuan"
+        },
+        "nilai": {
+          "type": "number",
+          "description": "Final score 0-100"
+        },
+        "jumlahBenar": {
+          "type": "number",
+          "description": "Number of correct answers"
+        },
+        "jumlahSalah": {
+          "type": "number",
+          "description": "Number of wrong answers"
+        },
+        "totalSoal": {
+          "type": "number",
+          "description": "Total questions count"
+        },
+        "statusTuntas": {
+          "type": "boolean",
+          "description": "Whether score passes passing grade (KKM >= 75)"
+        },
+        "feedbackGuru": {
+          "type": "string",
+          "description": "Teacher feedback note"
+        },
+        "tanggal": {
+          "type": "string",
+          "description": "Submission date and time string"
+        }
+      },
+      "required": ["idSiswa", "namaSiswa", "kelas", "tipe", "nilai", "statusTuntas", "tanggal"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User accounts and student profiles"
+    },
+    "/materials/{materialId}": {
+      "schema": "Material",
+      "description": "Curriculum learning materials for Faraidh"
+    },
+    "/questions/{questionId}": {
+      "schema": "Question",
+      "description": "Questions bank for interactive practice and official competency test"
+    },
+    "/results/{resultId}": {
+      "schema": "Result",
+      "description": "Student quiz and test evaluation records"
+    }
+  }
+}

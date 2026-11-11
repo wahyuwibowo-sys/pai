@@ -1,0 +1,8 @@
+{
+  "name": "Remix PAI-Waris Digital",
+  "description": "Aplikasi Web Interaktif Pembelajaran \u0026 Simulasi Perhitungan Pembagian Harta Waris Islam (Faraidh) untuk SMA/SMK",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
