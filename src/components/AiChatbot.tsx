@@ -15,7 +15,42 @@ const QUICK_PROMPTS = [
   'Kapan terjadi masalah \'Awal dan bagaimana solusinya?',
   'Bantu petunjuk langkah menghitung soal waris nomor 1',
   'Siapa saja yang terhalang jika ada anak laki-laki?',
+  'Siapa ahli waris yang tidak pernah terhalang sama sekali?',
+  'Bagian anak perempuan jika tunggal vs 2 orang?',
+  '4 kewajiban sebelum harta warisan dibagikan?',
+  'Bantu hitung studi kasus Pak Hamdan Rp 120jt',
 ];
+
+function renderFormattedMessage(text: string, isAssistant: boolean) {
+  const lines = text.split('\n');
+  return lines.map((line, idx) => {
+    // Process **bold** markers inside line
+    const parts = line.split(/(\*\*.*?\*\*)/g);
+    const renderedLine = parts.map((part, pIdx) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return (
+          <strong
+            key={pIdx}
+            className={`font-bold ${isAssistant ? 'text-slate-950 dark:text-emerald-200' : 'text-white'}`}
+          >
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      return part;
+    });
+
+    if (!line.trim()) {
+      return <div key={idx} className="h-1.5" />;
+    }
+
+    return (
+      <div key={idx} className="leading-relaxed">
+        {renderedLine}
+      </div>
+    );
+  });
+}
 
 export const AiChatbot: React.FC = () => {
   const { currentUser } = useAuth();
@@ -206,8 +241,8 @@ export const AiChatbot: React.FC = () => {
                         : 'bg-emerald-600 dark:bg-emerald-700 text-white rounded-tr-none'
                     }`}
                   >
-                    <div className="whitespace-pre-line space-y-1">
-                      {msg.text}
+                    <div className="space-y-1">
+                      {renderFormattedMessage(msg.text, isAssistant)}
                     </div>
                     <div
                       className={`text-[9px] mt-1 text-right ${
